@@ -1,39 +1,6 @@
 # Persistence
 
-## JDBC
-
-### 持久化数据
-
-![持久化数据](Persistence.assets/持久化数据.png)
-
-持久层实现接口分离
-
-1. 运行测试业务逻辑时，业务测试对象可以mock
-2. 方便替换持久化实现层，具体的数据库可以随便换，不影响数据库。
-
-### 异常
-
-#### SQLException
-
-+ 发生异常时很难恢复
-
-+ 难确定异常类型
-
-#### Hibernate异常
-
-+ 定义了许多具体异常，方便定位问题
-
-+ 对业务对象的侵入
-
-#### Spring所提供的平台无关的持久化异常
-
-+ DataAccessException，将上面两个异常转换成这个异常
-
-+ 具体异常，方便定位问题
-
-+ 隔离具体数据库平台
-
-### 模板方法
+## Spring的模板方法
 
 父类和子类的中的方法，业务逻辑不一样，实现上有细微差别的方法就是模板方法。
 
@@ -51,11 +18,46 @@ Spring将整个数据库的访问模板建好，用户只需要关心数据库�
 
 Spring提供的模板（后两个不怎么用，因为跟Spring强绑定在一起）
 
-+ JdbcTemplate
++ `JdbcTemplate`
 
-+ HibernateTemplate
++ `HibernateTemplate`
 
-+ JpaTemplate
++ `JpaTemplate`
+
+
+
+## JDBC
+
+### 持久化数据
+
+![持久化数据](Persistence.assets/持久化数据.png)
+
+持久层实现接口分离
+
+1. 运行测试业务逻辑时，业务测试对象可以mock
+2. 方便替换持久化实现层，具体的数据库可以随便换，不影响数据库。
+
+### 异常
+
+#### `SQLException`
+
++ 发生异常时很难恢复
+
++ 难确定异常类型
+
+#### `Hibernate`异常
+
++ 定义了许多具体异常，方便定位问题
+
++ 对业务对象的侵入
+
+#### `Spring`所提供的平台无关的持久化异常
+
++ `DataAccessException`，将上面两个异常转换成这个异常
+
++ 具体异常，方便定位问题
+
++ 隔离具体数据库平台
 
 ### 配置数据源方式
 
@@ -67,11 +69,11 @@ Java 命名与目录接口（Java Naming and Directory Interface）
 
 Spring中配置JNDI数据源
 
+```xml
 <jee:jndi-lookup id=“dataSource”
-
  jndi-name=“/jdbc/**DS”
-
 resource-ref=“true”/>
+```
 
 #### 连接池的数据源
 
@@ -85,15 +87,15 @@ resource-ref=“true”/>
 
 两种数据源
 
-+ DriverManagerDataSource：注意没有进行池化处理，每次都是赶回一个新的连接。
++ `DriverManagerDataSource`：注意没有进行池化处理，每次都是赶回一个新的连接。
 
-+ SingleConnectionDataSource：只有一个连接的池，每次都是返回这个连接。
++ `SingleConnectionDataSource`：只有一个连接的池，每次都是返回这个连接。
 
 与具备池功能的数据源相比，唯一的区别在于这些数据源bean都没有提供连接池功能，所以没有可配置的池相关属性。生产环境不建议使用，还是用数据源连接池。
 
 #### 配置嵌入式数据源
 
-\<jdbc:embedded-database>
+`<jdbc:embedded-database>`
 
 可以创建数据表和初始化数据，只要程序停止数据源就消失
 
@@ -178,37 +180,43 @@ public class JdbcConfig {
 
 ### Profile选择数据源
 
-@ActiveProfiles("ut")
+`@ActiveProfiles("ut")`
 
 ### 两种模板
 
-#### JdbcTemplate
+#### `JdbcTemplate`
 
+```java
 private static final String INSERT_SPITTER = "insert into Spitter (username, password, fullname, email, updateByEmail) values (?, ?, ?, ?, ?)";
+```
 
-#### NamedParameterJdbcTemplate
+#### `NamedParameterJdbcTemplate`
 
+```java
 private static final String INSERT_SPITTER = "insert into Spitter (username, password, fullname, email, updateByEmail) values (:username, :password, :fullname, :email, :updateByEmail)";
+```
+
+
 
 ## Hibernate
 
 ### ORM
 
-object-relational mapping、Object_Relative DateBase-Mapping
+`object-relational mapping`、`Object_Relative DateBase-Mapping`
 
 在Java对象与关系数据库之间建立某种映射，以实现直接存取Java对象
 
-例子：Hibernate、MyBatis、JPA (Java Persistence API)
+例子：`Hibernate`、`MyBatis`、`JPA` (Java Persistence API)
 
 ### 配置
 
-org.hibernate.Session接口
+`org.hibernate.Session`接口
 
-获得org.hibernate.SessionFactory对象，负责Session的打开、关闭、管理
+获得`org.hibernate.SessionFactory`对象，负责Session的打开、关闭、管理
 
 Session接口提供了基本的数据访问功能。通过Session接口，应用的Repository能满足所有的持久化需求
 
-+ org.springframework.orm.hibernate4.LocalSessionFactoryBean
++ `org.springframework.orm.hibernate4.LocalSessionFactoryBean`
 
 定义映射关系：XML、注解（JPA、Hibernate）
 
@@ -266,9 +274,9 @@ public class RepositoryTestConfig implements TransactionManagementConfigurer {
 
 ### 三类查询
 
-HQL:hibernate query language，即hibernate提供的面向对象的查询语言
+HQL: `hibernate query language`，即hibernate提供的面向对象的查询语言
 
-+ select/update/delete…… from …… where …… group by …… having …… order by …… asc/desc
++ `select/update/delete…… from …… where …… group by …… having …… order by …… asc/desc`
 
 QBC查询: query by criteria 完全面向对象的查询
 
@@ -321,6 +329,8 @@ public class OtherTest {
 }
 ```
 
+
+
 ## JPA
 
 JPA的宗旨是为POJO提供持久化标准规范
@@ -333,13 +343,13 @@ JPA语法大全
 
 ### 配置
 
-javax.persistence.EntityManager（功能相当于session对象）
+`javax.persistence.EntityManager`（功能相当于session对象）
 
 实体管理器工厂（entity manager factory）
 
-+ org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
++ `org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean`
 
-+ org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
++ `org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter`
 
 ```java
 @Configuration
@@ -466,17 +476,21 @@ public class SpitterRepositoryImpl implements SpitterSweeper {
 }
 ```
 
+
+
 ## MongoDB
 
 ### NoSQL
 
 NoSQL(Not Only SQL) ，指的是非关系型的数据库
 
-没有声明性查询语言
+- 没有声明性查询语言
 
-没有预定义的模式
+- 没有预定义的模式
 
-键-值对存储、列存储、文档存储、图形数据库
+类型：`键-值对存储`、`列存储`、`文档存储`、`图形数据库`
+
+MongoDB是一种非关系型数据库。
 
 ### 术语
 
@@ -488,13 +502,14 @@ MongoDB Shell是MongoDB自带的交互式Javascript shell,用来对MongoDB进行
 
 #### 指令
 
+```bash
 show dbs
-
 db
-
 db.something.insert({x:10})
-
 db.something.find()
+```
+
+
 
 ### Spring Data MongoDB
 

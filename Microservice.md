@@ -4,23 +4,16 @@
 
 ### 单体应用程序
 
-数据库的表对所有模块可见
-
-一个人的修改整个应用都要重新构建、测试、部署
-
-整体复制分布式部署，不能拆分按需部署
+- 数据库的表对所有模块可见
+- 一个人的修改整个应用都要重新构建、测试、部署
 
 ### 微服务特征
 
-应用程序分解为具有明确定义了职责范围的细粒度组件
-
-完全独立部署，独立测试，并可复用
-
-使用轻量级通信协议，HTTP和JSON，松耦合
-
-服务实现可使用多种编程语言和技术
-
-将大型团队划分成多个小型开发团队，每个团队只负责他们各自的服务
+- 应用程序分解为具有明确定义了职责范围的细粒度组件
+- 完全独立部署，独立测试，并可复用
+- 使用轻量级通信协议，HTTP和JSON，松耦合
+- 服务实现可使用多种编程语言和技术
+- 将大型团队划分成多个小型开发团队，每个团队只负责他们各自的服务
 
 ### Spring Boot和Spring Cloud
 
@@ -30,33 +23,25 @@ Spring Cloud使实施和部署微服务到私有云或公有云变得更加简�
 
 #### 微服务要考虑的问题
 
-微服务划分，服务粒度、通信协议、接口设计、配置管理、使用事件解耦微服务
-
-服务注册、发现和路由
-
-弹性，负载均衡，断路器模式（熔断），容错
-
-可伸缩
-
-日志记录和跟踪
-
-安全
-
-构建和部署，基础设施即代码
+- 微服务划分，服务粒度、通信协议、接口设计、配置管理、使用事件解耦微服务
+- 服务注册、发现和路由
+- 弹性，负载均衡，断路器模式（熔断），容错
+- 可伸缩
+- 日志记录和跟踪
+- 安全
+- 构建和部署，基础设施即代码
 
 #### Rest原则
 
 Representational State Transfer，表现层状态转移
 
-资源（Resources），就是网络上的一个实体，标识：URI
-
-表现层（Representation）：json、xml、html、pdf、excel
-
-状态转移（State Transfer）：服务端--客户端
+- 资源（Resources），就是网络上的一个实体，标识：URI
+- 表现层（Representation）：json、xml、html、pdf、excel
+- 状态转移（State Transfer）：服务端--客户端
 
 HTTP协议的四个操作方式的动词：GET、POST、PUT、DELETE
 
-CRUD：Create、Read、Update、Delete
+CRUD：`Create`（POST）、`Read`（GET）、`Update`（PUT）、`Delete`（DELETE）
 
 如果一个架构符合REST原则，就称它为RESTful架构。
 
@@ -76,39 +61,7 @@ CRUD：Create、Read、Update、Delete
 
 mvn spring-boot:run
 
-健康检查：localhost:8080/health
-
-### Dockerfile
-
-1.FROM：指定基础镜像，必须为第一个命令
-
-2.MAINTAINER: 维护者信息
-
-3.RUN：构建镜像时执行的命令
-
-4.ADD：将本地文件添加到容器中，tar类型文件会自动解压
-
-5.COPY：功能类似ADD，但是不会自动解压文件
-
-6.CMD：构建容器后调用，也就是在容器启动时才进行调用
-
-7.ENTRYPOINT：配置容器，使其可执行化。配合CMD可省去"application"，只使用参数
-
-8.LABEL：用于为镜像添加元数据
-
-9.ENV：设置环境变量
-
-10.EXPOSE：指定与外界交互的端口
-
-11.VOLUME：用于指定持久化目录
-
-12.WORKDIR：工作目录，类似于cd命令
-
-13.USER:指定运行容器时的用户名或 UID
-
-14.ARG：用于指定传递给构建运行时的变量
-
-15.ONBUILD：用于设置镜像触发器
+健康检查：localhost:8080/health（需要Actuator）
 
 ## 配置服务
 
@@ -126,7 +79,7 @@ mvn spring-boot:run
 
 与物理部署分离，如外部数据库
 
-配置作为单独的服务提供（配置管理服务） - 虽高层级
+配置作为单独的服务提供（配置管理服务） - 最高层级
 
 配置管理更改需要通知到使用数据的服务
 
@@ -156,13 +109,11 @@ bootstrap.yml，指定服务名configserver
 
 #### 不同环境
 
-@Profile
+`@Profile`
 
--Dspring.profiles.active=***
+`-Dspring.profiles.active=***`
 
-命名约定：应用程序名称-环境名称.yml
-
-访问：http://localhost:8888/licensingservice/default
+命名约定：应用程序名称-环境名称.yml，例如http://localhost:8888/licensingservice/default
 
 数据来源Git
 
@@ -181,24 +132,6 @@ refresh端点：属性刷新
 health端点：查看运行情况
 
 env端点：获取全部环境属性
-
-### docker-compose命令
-
-docker-compose --help
-
-docker-compose up -d
-
-docker-compose ps
-
-docker-compose stop：终止整个服务集合
-
-docker-compose stop nginx： 终止指定的服务 （这有个点就是启动的时候会先启动 depond_on 中的容器，关闭的时候不会影响到 depond_on 中的）
-
-docker-compose logs -f [services...]：查看容器的输出日志
-
-docker-compose build --no-cache --force-rm：构建镜像时不使用缓存（能避免很多因为缓存造成的问题）
-
-docker-compose rm nginx：移除指定的容器
 
 ### 访问配置服务
 
@@ -359,23 +292,23 @@ public IRule ribbonRule() {
 
 客户端弹性模式要解决的重点：让客户端免于崩溃。
 
-目标：让客户端快速失败，而不消耗数据库连接或线程池之类的宝贵资源，防止远程服务的问题向客户端上游传播。
+目标：让客户端快速失败，而不消耗数据库连接或线程池之类的宝贵资源，防止远程服务的问题向客户端上游传播。（防止级联故障）
 
 ### 四种模式
 
-客户端负载均衡（client load banlance）模式
+#### 客户端负载均衡（client load banlance）模式
 
 + Ribbon提供的负载均衡器，帮助发现问题，并删除实例
 
-断路器模式(Circuit Breaker Patten)
+#### 断路器模式（Circuit Breaker Patten）
 
 + 监视调用失败的次数，快速失败
 
-后备（fallback）模式
+#### 后备（fallback）模式
 
 + 远程服务调用失败，执行替代代码路径
 
-舱壁隔离模式(Bulkhead Isolation Pattern)
+#### 舱壁隔离模式（Bulkhead Isolation Pattern）
 
 + 线程池充当服务的舱壁
 
@@ -385,31 +318,36 @@ Hystrix是一个延迟和容错库，旨在隔离对远程系统，服务和第�
 
 pom.xml文件中的依赖
 
-+ spring-cloud-starter-hystrix
++ `spring-cloud-starter-hystrix`
 
-启动类加注解：@EnableCircuitBreaker
+启动类加注解：`@EnableCircuitBreaker`
 
-用断路器包装远程资源调用，方法加注解：@HystrixCommand
+用断路器包装远程资源调用，方法加注解：`@HystrixCommand`
 
-默认1秒超时，超时会抛异常：com.netflix.hystrix.exception.HystrixRuntimeException
+默认1秒超时，超时会抛异常：`com.netflix.hystrix.exception.HystrixRuntimeException`
 
+```java
 @HystrixCommand(
      commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "12000")}
  )
+```
 
 ### 后备（fallback）模式
 
-fallbackMethod = "buildFallbackCargo"
+`fallbackMethod = "buildFallbackCargo"`
 
 buildFallbackCargo方法位于相同类，与原方法具有相同签名
 
+```java
 @HystrixCommand(
      fallbackMethod = "buildFallbackCargo")
+```
 
-### 舱壁隔离模式(Bulkhead Isolation Pattern)
+### 舱壁隔离模式（Bulkhead Isolation Pattern）
 
 Hystrix默认共享同一个线程池（10个线程），用于不同的远程资源访问
 
+```java
 @HystrixCommand(
      threadPoolKey = "getCargoThreadPool",
      threadPoolProperties =
@@ -417,7 +355,8 @@ Hystrix默认共享同一个线程池（10个线程），用于不同的远程�
              @HystrixProperty(name = "coreSize", value = "30"),
              @HystrixProperty(name = "maxQueueSize", value = "10")
          }
- )
+)
+```
 
 ### 断路器模式(Circuit Breaker Patten)
 
@@ -428,18 +367,17 @@ Hystrix默认共享同一个线程池（10个线程），用于不同的远程�
 ### 分布式系统的横切关注点
 
 cross-cutting concern
-安全
-日志记录
-用户跟踪
-服务网关（service gateway）
+
+- 安全
+- 日志
+- 用户跟踪
+- 服务网关（service gateway）
 
 ### 服务网关
 
-服务网关位于服务客户端和相应的服务实例之间
-
-服务之间不能直接访问，要通过网关访问
-
-所有服务调用（内部和外部）都应流经服务网关
+- 服务网关位于服务客户端和相应的服务实例之间
+- 服务之间不能直接访问，要通过网关访问
+- 所有服务调用（内部和外部）都应流经服务网关
 
 服务网关提供的能力
 
@@ -459,6 +397,7 @@ cross-cutting concern
 #### 自动配置
 
 服务ID
+
 Zuul需要访问Eureka，查看注册的服务。有服务才会创建路由
 
 #### 手动配置
@@ -500,7 +439,9 @@ zuul POST:http://localhost:5555/refresh
 #### 设置超时时间
 
 Hystrix,1S
+
 Ribbon,5S
+
 Ribbon的懒加载导致第一次调用慢，引起失败
 
 ### Zuul过滤器
@@ -509,9 +450,9 @@ Ribbon的懒加载导致第一次调用慢，引起失败
 
 ZuulFilter
 
-+ 前置过滤器，在Zuul将实际请求发送到目的地之前被调用
-+ 后置过滤器，在目标服务被调用并将响应发送回客户端后被调用
-+ 路由过滤器，用于在调用目标服务之前拦截调用
++ `前置过滤器`，在Zuul将实际请求发送到目的地之前被调用
++ `后置过滤器`，在目标服务被调用并将响应发送回客户端后被调用
++ `路由过滤器`，用于在调用目标服务之前拦截调用
 
 ![image-20210424013104887](Microservice.assets/Zuul过滤器.png)
 

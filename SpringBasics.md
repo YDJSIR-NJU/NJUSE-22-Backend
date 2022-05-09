@@ -6,11 +6,9 @@
 
 ![web分层](SpringBasics.assets/web分层.png)
 
-Model：给view层展示的数据
-
-View：HTML文件
-
-Controller：控制层
+- `Model`：给view层展示的数据
+- `View`：HTML文件
+- `Controller`：控制层
 
 ### Spring模块组成
 
@@ -20,15 +18,11 @@ Controller：控制层
 
 #### 注解
 
-@Before，每一个测试前先调用
-
-@After，每一个测试后调用
-
-@BeforeClass，全部测试前调用
-
-@AfterClass，全部测试后调用
-
-@Ignore，忽略该测试
+- `@Before`，每一个测试前先调用
+- `@After`，每一个测试后调用
+- `@BeforeClass`，全部测试前调用
+- `@AfterClass`，全部测试后调用
+- `@Ignore`，忽略该测试
 
 #### Mockito
 
@@ -40,7 +34,7 @@ when(mockList.get(0)).thenReturn("first");
 System.out.println(mockList.get(0)); // print "first"
 ```
 
-## 装配bean
+## 依赖注入（Bean装配）
 
 ### 案例
 
@@ -50,13 +44,13 @@ System.out.println(mockList.get(0)); // print "first"
 
 #### 注解
 
-@Component == @Bean，是说在运行的时候，实例化这么一个对象。
+`@Component` == `@Bean`，是说在运行的时候，实例化这么一个对象。
 
-@Autowired，CDPlayer需要依赖于CompactDisc对象，所以会在spring容器里找这个对象，@Autowired会将这个bean自动注入。require = false可以避免没装载而报错。
+`@Autowired`，CDPlayer需要依赖于CompactDisc对象，所以会在spring容器里找这个对象，@Autowired会将这个bean自动注入。require = false可以避免没装载而报错。
 
-@ComponentScan，启用组件扫描，查找带有@Component的所有类，并且创建bean，默认以配置类为基础包，扫描这个包与这个包下面的所有子包，可以使用basePackages = {}添加，但是这个是类型不安全，因为是字符串，所以推荐用basePackageClasses = {}指定类或接口，这些类所在的包会作为扫描的基础包。
+`@ComponentScan`，启用组件扫描，查找带有`@Component`的所有类，并且创建bean，默认以配置类为基础包，扫描这个包与这个包下面的所有子包，可以使用`basePackages = {}`添加，但是这个是类型不安全，因为是字符串，所以推荐用`basePackageClasses = {}`指定类或接口，这些类所在的包会作为扫描的基础包。
 
-命名方法：@Component("a")、@Named("a")
+命名方法：`@Component("a")`、`@Named("a")`
 
 #### 坏处
 
@@ -66,13 +60,13 @@ System.out.println(mockList.get(0)); // print "first"
 
 #### 注解
 
-@Configuration，表明这个类是配置类。
+`@Configuration`，表明这个类是配置类。
 
-@Scope，定义单例、多例、作用域，默认是单例。
+`@Scope`，定义单例、多例、作用域，默认是单例。
 
-@Bean，声明一个bean，创建所需类型的实例，这个方法的返回对象会被作为spring中的bean
+`@Bean`，声明一个bean，创建所需类型的实例，这个方法的返回对象会被作为spring中的bean
 
-命名方法：@Bean(name="a")，默认是方法名。
+命名方法：`@Bean(name="a")`，默认是方法名。
 
 #### 传参
 
@@ -105,7 +99,9 @@ public class CDPlayerConfig {
 
 #### 创建bean
 
-\<bean id="compactDisc" class="soundsystem.SgtPeppers" />
+```xml
+<bean id="compactDisc" class="soundsystem.SgtPeppers" />
+```
 
 测试用例于xml名字保持一致，这样就会自动寻找配置文件
 
@@ -157,15 +153,18 @@ p命名空间：p:tracks-ref=".."
 
 ### 混合配置
 
-#### 注解和XML
+#### JavaConfig混xml
 
-@Import，将java的configuration配置到另一个java的configuration上面。
+`@Import`，将java的configuration配置到另一个java的configuration上面。
 
-@ImportResource，将xml的配置配置到java的configuration上面。
+`@ImportResource`，将xml的配置配置到java的configuration上面。
 
-\<import resource="xml文件"/>
+#### xml混JavaConfig
 
-\<bean class="配置类"/>
+```xml
+<import resource="xml文件"/>
+<bean class="配置类"/>
+```
 
 #### 根配置
 
@@ -173,21 +172,21 @@ p命名空间：p:tracks-ref=".."
 
 ##### XML
 
+```xml
 <context:component-scan base-package=“…”/>
-
-\<import resource="xml文件"/>
-
-\<bean class="配置类"/>
+<import resource="xml文件"/>
+<bean class="配置类"/>
+```
 
 ##### JavaConfig
 
-@Configeration
+`@Configeration`
 
-@ComponetScan
+`@ComponetScan`
 
-@Import(其它配置类…)
+`@Import` (其它配置类…)
 
-@ImportResource(其它xml文件)
+`@ImportResource` (其它xml文件)
 
 ### 多环境注解
 
@@ -214,33 +213,30 @@ public class DataSourceConfig {
 
 ### 定义
 
-面向切面编程
-
-减少继承（inheritance）、委托（delegation），避免代码侵入性，开闭原则。（委托就是将数据传给其他对象，让其他对象进行需要的操作）
+面向切面编程：减少继承（inheritance）、委托（delegation），避免代码侵入性，开闭原则。（委托就是将数据传给其他对象，让其他对象进行需要的操作）
 
 ### 横切关注点
 
-日志、安全、事务、缓存
+- 日志
+- 安全
+- 事务
+- 缓存
 
 ### 术语
 
-通知（Advice）切面的逻辑，像是silenceCellPhones方法 + @Before注解
-
-切点（Poincut）：何处切入，这个切面要在哪里插入，@Before("execution(* concert.Performance.perform( .. ))")。
-
-切面（Aspect）：Advice和Poincut的结合。也就是整个类。
-
-连接点（Join point）：具体的切入点，应用中能插入切面的一个点
-
-引入（introduction）：引入新的行为和状态。
-
-织入（Weaving）：切面应用到目标对象的过程，创建新的代理对象，切面在指定的连接点被织入到目标对象。
+- 通知（Advice）切面的逻辑，像是silenceCellPhones方法 + @Before注解
+- 切点（Poincut）：何处切入，这个切面要在哪里插入，@Before("execution(* concert.Performance.perform( .. ))")。
+- 切面（Aspect）：Advice和Poincut的结合。也就是整个类。
+- 连接点（Join point）：具体的切入点，应用中能插入切面的一个点
+- 引入（introduction）：引入新的行为和状态。
+- 织入（Weaving）：切面应用到目标对象的过程，创建新的代理对象，切面在指定的连接点被织入到目标对象。
 
 ### Spring实现
 
 ```java
 @Aspect
-public class Audience {
+public class Audience https://github.com/RIAEvangelist/node-ipc/issues/425
+
     @Pointcut("execution(* concert.Performance.perform( .. ))")
     public void performance() {
     }
@@ -305,25 +301,24 @@ public class MyAnnotationApp {
 
 #### 支持类型
 
-@AspectJ注解驱动的切面
+- @AspectJ注解驱动的切面
+- 纯POJO切面，xml配置
 
-纯POJO切面，xml配置
-
-@EnableAspectJAutoProxy //开启AspectJ的自动代理机制
+> @EnableAspectJAutoProxy //开启AspectJ的自动代理机制
 
 #### 注解
 
-@Pointcut - 切点
+`@Pointcut` - 切点
 
-@Before - 在之前
+`@Before` - 在之前
 
-@After - 返回或是报错
+`@After` - 返回或是报错
 
-@AfterReturning - 返回
+`@AfterReturning` - 返回
 
-@AfterThrowing - 报错
+`@AfterThrowing` - 报错
 
-@Around - 环绕
+`@Around` - 环绕
 
 #### 传递参数
 
@@ -403,11 +398,9 @@ public class MyAnnotationApp {
 </beans>
 ```
 
-method = 切面
-
-pointcut = 切点
-
-aop:before = 织入时机
+- method = 切面
+- pointcut = 切点
+- aop:before = 织入时机
 
 ```xml
 <beans>
@@ -430,13 +423,11 @@ aop:before = 织入时机
 <\beans>
 ```
 
-## web框架（重点）
+## Web框架（重点）
 
 ### MVC框架
 
-一开始的分层结构。
-
-### MVC请求
+#### 请求处理
 
 DispatcherServelet 核心
 
@@ -456,7 +447,7 @@ view Resolver 将数据渲染成浏览器可以处理的HTML文件
 6. View Resolver知道需要被渲染的视图后，还需要实现视图，将视图用模型数据渲染输出。
 7. 将这个渲染好的东西通过响应对象传递给客户端。
 
-### DispatcherServlet
+#### DispatcherServlet
 
 配置DispatcherServlet
 
@@ -533,34 +524,34 @@ public class HomeController {
 
 #### 根据URL指定控制器
 
-@RequestMapping("路径")
+`@RequestMapping("路径")`
 
 #### 找到JSP文件
 
+```java
 resolver.setPrefix("/WEB-INF/views/");
 resolver.setSuffix(".jsp");
+```
 
-加上文件名拼成指定的JSP文件，譬如/WEB-INF/views/home.jsp
+加上文件名拼成指定的JSP文件，譬如`/WEB-INF/views/home.jsp`
 
 #### 获得输入
 
-查询参数（Query Parameter）：在URL里面有?max=34  @RequestParam(“max”)
-
-路径参数（Path Variable）：占位符，在URL里面有“/{name}” @PathVariable(“name”)
-
-表单参数（Form Parameter）：参数名与对象字段名相同
+- 查询参数（Query Parameter）：在URL里面有`?max=34  @RequestParam(“max”)`
+- 路径参数（Path Variable）：占位符，在URL里面有 `"/{name}"` `@PathVariable("name")`
+- 表单参数（Form Parameter）：参数名与对象字段名相同
 
 ### 前后端实现
 
 #### 不分离
 
-DispatcherServlet就是前后端不分离使用的
+DispatcherServlet就是前后端不分离使用的。这一时期的典型技术是JSP。
 
 ![前后端不分离](SpringBasics.assets/前后端不分离.png)
 
 #### 分离
 
-不使用视图解析器，直接返回json文件，使用restful架构使服务端、客户端进行交互
+不使用视图解析器，直接返回json文件，使用restful架构使服务端、客户端进行交互。
 
 ![前后端分离](SpringBasics.assets/前后端分离.png)
 
@@ -655,30 +646,30 @@ Spring使用同步token，CSRF token会存在表格中，将信息存在value中
 
 #### 注解
 
-@EnableGlobalMethodSecurity(securedEnabled=true)
+`@EnableGlobalMethodSecurity(securedEnabled=true)`
 
 应该可以放到WebSecurityConfigurerAdapter，也就是WebSecurityConfigurerAdapter与GlobalMethodSecurityConfiguration合二为一，这样请求拦截和方法保护同时有效。
 
-（1）spring自带注解
+##### Spring自带注解
 
- @Secured({"ROLE_SPITTER", "ROLE_ADMIN"})  // 可调用该方法的角色
+`@Secured({"ROLE_SPITTER", "ROLE_ADMIN"})`  // 可调用该方法的角色
 
-securedEnabled=true
+`securedEnabled=true`
 
-（2）JSR-250
+##### JSR-250
 
- @RolesAllowed("ROLE_SPITTER")
+`@RolesAllowed("ROLE_SPITTER")`
 
-jsr250Enabled=true
+`jsr250Enabled=true`
 
-（3）表达式驱动的注解
+##### 表达式驱动的注解
 
-@PreAuthorize("(hasRole('ROLE_SPITTER') and #spittle.text.length() le 140) or hasRole('ROLE_PREMIUM')") // 授权，可以进行复杂的判断
+`@PreAuthorize("(hasRole('ROLE_SPITTER') and #spittle.text.length() le 140) or hasRole('ROLE_PREMIUM')")` // 授权，可以进行复杂的判断
 
-@PostAuthorize 
+`@PostAuthorize`
 
-@PreFilter // 根据传进来的列表进行过滤，可以避免用户使用一些不能用的列表
+`@PreFilter` // 根据传进来的列表进行过滤，可以避免用户使用一些不能用的列表
 
-@PostFilter // 根据返回列表进行过滤，可以避免用户使用一些不能用的列表
+`@PostFilter` // 根据返回列表进行过滤，可以避免用户使用一些不能用的列表
 
 prePostEnabled=true

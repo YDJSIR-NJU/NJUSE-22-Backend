@@ -233,7 +233,7 @@ org.springframework.data.redis.cache.RedisCacheManager（远程储存，分布�
 
 #### 具体方法缓存注解
 
-@Cacheable：调用方法之前，先在缓存中找方法的返回值
+@Cacheable：调用方法之前，先在缓存中找方法的返回值。有的话就直接用缓存了
 
 @CachePut：直接调用方法，在调用完之后将返回值存到缓存中。
 
